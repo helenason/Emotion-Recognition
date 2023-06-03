@@ -1,0 +1,91 @@
+<html>
+  <head>
+    <title>ML-Advanced</title>
+    <style>
+      h1 {
+        padding: 9px;
+        font: small-caps bold 33px/1 sans-serif;
+      }
+      p {
+        padding: 10px;
+        font: caption;
+      }
+      button {
+        margin: 10px;
+        background-color: white;
+        border: 1px solid #212121;
+      }
+      img {
+        margin: 10px;
+      }
+      table {
+        width: 50%;
+        margin: 10px;
+        border: 1px solid #212121;
+        background-color: #f6f6f6;
+        border-collapse: collapse;
+        text-align: center;
+      }
+      th {
+        border: 1px solid #212121;
+        padding: 10px;
+        font-weight: bold;
+      }
+      td {
+        border: 1px solid #212121;
+        background-color: #e1e1e1;
+        padding: 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <h1>Music recommendation by detecting facial expressions</h1>
+      <p>Press the button.</p>
+      <button id="button">🎧</button>
+      <br />
+      <img src="{{ url_for('video_feed') }}" />
+    </div>
+    <div id="result-area"></div>
+
+    <script>
+      const cameraTrigger = document.getElementById("button");
+      const resultArea = document.getElementById("result-area");
+
+      cameraTrigger.addEventListener("click", function () {
+        resultArea.innerHTML = "";
+
+        fetch("/music_list")
+          .then((res) => res.json())
+          .then((data) => {
+            // resultArea.innerHTML += res.json())
+            console.log("response: ", data);
+            var table = document.createElement("table");
+            resultArea.appendChild(table);
+            var rowHeader = document.createElement("tr");
+            table.appendChild(rowHeader);
+
+            var headerNames = ["Title", "Artist"];
+            headerNames.forEach(function (name) {
+              var headerCell = document.createElement("td");
+              headerCell.textContent = name;
+              rowHeader.appendChild(headerCell);
+            });
+
+            data.forEach(function (value) {
+              var row = document.createElement("tr");
+              table.appendChild(row);
+
+              var cellNames = ["Name", "Artist"];
+              cellNames.forEach(function (cellName) {
+                var cell = document.createElement("td");
+                cell.textContent = value[cellName];
+                row.appendChild(cell);
+              });
+            });
+          })
+          .catch((error) => console.error("error: ", error));
+      });
+    </script>
+  </body>
+</html>
